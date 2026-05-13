@@ -21,10 +21,45 @@ const _placeHerringboneHorizontal = (
             continue
         }
 
-        planks.push({
+        const newPlank: FloorPlank = {
             position: [current.x + plankLengthM / 2, 0, current.z + plankWidthM / 2],
             rotation: rotation,
-        })
+            size: plank,
+        }
+
+        // cut left
+        if (current.x < -room.length / 2) {
+            const newLength = (plankLengthM + (current.x + room.length / 2)) * 1000
+            newPlank.size = { length: newLength, width: newPlank.size.width }
+            const dx = (plankLengthM - newLength) / 2
+            newPlank.position[0] = current.x + plankLengthM + dx / 1000
+        }
+
+        // cut right
+        if (current.x > room.length / 2 - plankLengthM) {
+            const newLength = Math.min(plankLengthM, room.length / 2 - current.x) * 1000
+            newPlank.size = { length: newLength, width: newPlank.size.width }
+            const dx = (plankLengthM - newLength) / 2
+            newPlank.position[0] = current.x - dx / 1000
+        }
+
+        // cut top
+        if (current.z < -room.width / 2) {
+            const newWidth = (plankWidthM + (current.z + room.width / 2)) * 1000
+            newPlank.size = { length: newPlank.size.length, width: newWidth }
+            const dy = (plankWidthM - newWidth) / 2
+            newPlank.position[2] = current.z + plankWidthM + dy / 1000
+        }
+
+        // cut bottom
+        if (current.z > room.width / 2 - plankWidthM) {
+            const newWidth = Math.min(plankWidthM, room.width / 2 - current.z) * 1000
+            newPlank.size = { length: newPlank.size.length, width: newWidth }
+            const dy = (plankWidthM - newWidth) / 2
+            newPlank.position[2] = current.z - dy / 1000
+        }
+
+        planks.push(newPlank)
 
         current.x -= plankWidthM + JOINT_GAP
         current.z += plankWidthM + JOINT_GAP
@@ -54,10 +89,45 @@ const _placeHerringboneVertical = (
             continue
         }
 
-        planks.push({
+        const newPlank: FloorPlank = {
             position: [current.x + plankWidthM / 2, 0, current.z + plankLengthM / 2],
             rotation: rotation,
-        })
+            size: plank,
+        }
+
+        // cut left
+        if (current.x < -room.length / 2) {
+            const newWidth = (plankWidthM + (current.x + room.length / 2)) * 1000
+            newPlank.size = { length: newPlank.size.length, width: newWidth }
+            const dx = (plankWidthM - newWidth) / 2
+            newPlank.position[0] = current.x + plankWidthM + dx / 1000
+        }
+
+        // cut right
+        if (current.x > room.length / 2 - plankWidthM) {
+            const newWidth = Math.min(plankWidthM, room.length / 2 - current.x) * 1000
+            newPlank.size = { length: newPlank.size.length, width: newWidth }
+            const dx = (plankWidthM - newWidth) / 2
+            newPlank.position[0] = current.x - dx / 1000
+        }
+
+        // cut top
+        if (current.z < -room.width / 2) {
+            const newLength = (plankLengthM + (current.z + room.width / 2)) * 1000
+            newPlank.size = { length: newLength, width: newPlank.size.width }
+            const dz = (plankLengthM - newLength) / 2
+            newPlank.position[2] = current.z + plankLengthM - plankWidthM + (plankWidthM + dz / 1000)
+        }
+
+        // cut bottom
+        if (current.z > room.width / 2 - plankLengthM) {
+            const newLength = Math.min(plankLengthM, room.width / 2 - current.z) * 1000
+            newPlank.size = { length: newLength, width: newPlank.size.width }
+            const dy = (plankLengthM - newLength) / 2
+            newPlank.position[2] = current.z - dy / 1000
+        }
+
+        planks.push(newPlank)
 
         current.x += plankWidthM + JOINT_GAP
         current.z -= plankWidthM + JOINT_GAP
@@ -84,8 +154,8 @@ export const generateHerringbonePattern = (room: RoomDimensions, plank: PlankDim
         z: startZ,
     }
 
-    const rotation: [number, number, number] = [-Math.PI / 2, 0, 0]
-    const rotation90: [number, number, number] = [-Math.PI / 2, 0, Math.PI / 2]
+    const rotation: [number, number, number] = [Math.PI / 2, 0, 0]
+    const rotation90: [number, number, number] = [-Math.PI / 2, Math.PI / 2, Math.PI]
 
     let horizontalCount = 1
     let verticalCount = 0
@@ -110,7 +180,7 @@ export const generateStraightPattern = (room: RoomDimensions, plank: PlankDimens
 
     let currentZ = startZ
     let odd = false
-    const rotation: [number, number, number] = [-Math.PI / 2, 0, 0]
+    const rotation: [number, number, number] = [Math.PI / 2, 0, 0]
 
     while (currentZ < room.width / 2) {
         let currentX = startX
@@ -118,10 +188,37 @@ export const generateStraightPattern = (room: RoomDimensions, plank: PlankDimens
         if (!odd) currentX -= plankLengthM / 2
 
         while (currentX < room.length / 2) {
-            planks.push({
+            const newPlank: FloorPlank = {
                 position: [currentX + plankLengthM / 2, 0, currentZ + plankWidthM / 2],
                 rotation: rotation,
-            })
+                size: plank,
+            }
+
+            // cut left
+            if (currentX < -room.length / 2) {
+                const newLength = (plankLengthM + (currentX + room.length / 2)) * 1000
+                newPlank.size = { length: newLength, width: plank.width }
+                const dx = (plankLengthM - newLength) / 2
+                newPlank.position[0] = currentX + plankLengthM + dx / 1000
+            }
+
+            // cut right
+            if (currentX > room.length / 2 - plankLengthM) {
+                const newLength = Math.min(plankLengthM, room.length / 2 - currentX) * 1000
+                newPlank.size = { length: newLength, width: plank.width }
+                const dx = (plankLengthM - newLength) / 2
+                newPlank.position[0] = currentX - dx / 1000
+            }
+
+            // cut bottom
+            if (currentZ > room.width / 2 - plankWidthM) {
+                const newWidth = Math.min(plankWidthM, room.width / 2 - currentZ) * 1000
+                newPlank.size = { length: newPlank.size.length, width: newWidth }
+                const dy = (plankWidthM - newWidth) / 2
+                newPlank.position[2] = currentZ - dy / 1000
+            }
+
+            planks.push(newPlank)
 
             currentX += plankLengthM + JOINT_GAP
         }

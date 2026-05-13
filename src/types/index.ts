@@ -25,4 +25,5 @@ export interface Calculations {
 export interface FloorPlank {
     position: [number, number, number]
     rotation: [number, number, number]
+    size: PlankDimensions
 }

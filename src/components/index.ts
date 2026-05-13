@@ -1,0 +1,5 @@
+export { Room } from './Room'
+export { Floor } from './Floor'
+export { Skirting } from './Skirting'
+export { Scene } from './Scene'
+export { SettingsPanel } from './SettingsPanel'

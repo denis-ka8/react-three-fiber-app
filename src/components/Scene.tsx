@@ -1,20 +1,19 @@
 import { OrbitControls } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
-import { RoomDimensions, PlankDimensions, LayoutType } from '../types'
+import { RoomDimensions, FloorPlank } from '../types'
 import { Room } from './Room'
 import { Floor } from './Floor'
 import { Skirting } from './Skirting'
 
 interface SceneProps {
     dimensions: RoomDimensions
-    plank: PlankDimensions
-    layoutType: LayoutType
+    planks: FloorPlank[]
 }
 
 /**
  * Компонент сцены с канвасом
  */
-export function Scene({ dimensions, plank, layoutType }: SceneProps) {
+export function Scene({ dimensions, planks }: SceneProps) {
     const cameraDistance = Math.max(dimensions.length, dimensions.width) * 0.8
 
     return (
@@ -37,13 +36,12 @@ export function Scene({ dimensions, plank, layoutType }: SceneProps) {
                 shadow-mapSize-height={2048}
                 castShadow
             />
-            <pointLight position={[-10, 8, -10]} intensity={0.3} />
 
             {/* Комната */}
             <Room dimensions={dimensions} />
 
             {/* Пол */}
-            <Floor dimensions={dimensions} plank={plank} layoutType={layoutType} />
+            <Floor planks={planks} />
 
             {/* Плинтус */}
             <Skirting dimensions={dimensions} />

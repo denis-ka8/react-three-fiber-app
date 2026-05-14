@@ -15,7 +15,16 @@ const SKIRTING_COLOR = new THREE.Color(0xd4a574) // цвет под дерево
 export function Skirting({ dimensions }: SkirtingProps) {
     const { length, width } = dimensions
 
-    const material = <meshStandardMaterial color={SKIRTING_COLOR} roughness={0.7} metalness={0} />
+    const material = (
+        <meshStandardMaterial
+            color={SKIRTING_COLOR}
+            roughness={0.7}
+            metalness={0}
+            polygonOffset={true}
+            polygonOffsetFactor={1}
+            polygonOffsetUnits={1}
+        />
+    )
 
     return (
         <group>
